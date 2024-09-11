@@ -15,6 +15,7 @@ import e from 'express';
 export class ListProduitComponent implements OnInit {
   produits: Produit[] = [];
   currentCategoryId: number = 1;
+  searchMode: boolean = false;
 
   constructor(private produitService: ProduitService,
               private route: ActivatedRoute) { }
@@ -25,6 +26,27 @@ export class ListProduitComponent implements OnInit {
     });
   }
   listProduit() {
+    this.searchMode = this.route.snapshot.paramMap.has('keyword');
+    if (this.searchMode) {
+      this.handleSearchProduits();
+    }
+    else {
+      this.handleListeProduits();
+    }
+  }
+
+  handleSearchProduits() {
+    const theKeyword: string = this.route.snapshot.paramMap.get('keyword')!;
+
+    // now search for the produits using keyword
+    this.produitService.searchProduits(theKeyword).subscribe(
+      ((data: Produit[]) => {
+        this.produits = data;
+      })
+    );
+  }
+
+  handleListeProduits() {
     // Check if "id" est disponible
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
 

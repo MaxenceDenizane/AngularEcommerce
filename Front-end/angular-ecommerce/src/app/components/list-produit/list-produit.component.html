@@ -13,6 +13,11 @@
                         <a href="#" class="primary-btn">Aujouter au panier</a>
                     </div>
                  </div>
+                 <!-- Si la recherche ne renvoit rien : -->
+                <div *ngIf="produits?.length == 0" class="alert alert-info col-md-12" role="alert">
+                        <div class="alert alert-info">
+                            Aucun produit trouvé
+                </div>
             </div>
         </div>
     </div>
