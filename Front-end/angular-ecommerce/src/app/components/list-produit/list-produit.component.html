@@ -5,8 +5,12 @@
                 <!-- Product List (boucle sur la collection de produit) -->
                  <div *ngFor="let tempProduit of produits" class="col-md-3">
                     <div class="product-box">
-                        <img src="{{ tempProduit.imageUrl }}" class="img-responsive" onerror="this.onerror=null;this.src='assets/images/placeholder.png';">
-                        <h1>{{ tempProduit.name }} </h1>
+                        <a routerLink="/products/{{ tempProduit.id }}">
+                            <img src="{{ tempProduit.imageUrl }}" class="img-responsive" onerror="this.onerror=null;this.src='assets/images/placeholder.png';">
+                        </a>
+                        <a routerLink="/products/{{ tempProduit.id }}" style="text-decoration: none;">
+                            <h1>{{ tempProduit.name }} </h1>
+                        </a>
                         <div class="prix">
                             {{ tempProduit.unitPrice | currency: 'EUR' }}
                         </div>
