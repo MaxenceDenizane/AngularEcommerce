@@ -47,11 +47,26 @@ export class ProduitService {
     const produitUrl = `${this.baseUrl}/${theProduitId}`;
     return this.httpClient.get<Produit>(produitUrl);
   }
+
+  getProduitListPaginate(thePage: number, thePageSize: number, theCategoryId: number): Observable<GetResponseProducts>{
+
+    // build URL based on category id, page and size
+    const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`
+                      + `&page=${thePage}&size=${thePageSize}`;
+
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
 }
 
 interface GetResponseProducts {
   _embedded: {
     products: Produit[];
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 }
 

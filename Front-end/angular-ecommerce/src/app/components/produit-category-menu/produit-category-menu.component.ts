@@ -3,12 +3,12 @@ import { ProduitCategory } from '../../common/produit-category';
 import { ProduitService } from '../../services/produit.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { error } from 'console';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-produit-category-menu',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, NgbModule],
   templateUrl: './produit-category-menu.component.html',
   styleUrl: './produit-category-menu.component.css'
 })
