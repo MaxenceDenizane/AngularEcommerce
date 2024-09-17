@@ -23,6 +23,7 @@ export class ListProduitComponent implements OnInit {
   thePageSize: number = 5;
   theTotalElements: number = 0;
 
+  previousKeyword: string = "";
 
   constructor(private produitService: ProduitService,
               private route: ActivatedRoute) { }
@@ -42,15 +43,36 @@ export class ListProduitComponent implements OnInit {
     }
   }
 
+  updatePageSize(pageSize: string) {
+    this.thePageSize = +pageSize;
+    this.thePageNumber = 1;
+    this.listProduit();
+  }
+
+  processResult() {
+    return (data: any) => {
+      this.produits = data._embedded.products;
+      this.thePageNumber = data.page.number + 1;
+      this.thePageSize = data.page.size;
+      this.theTotalElements = data.page.totalElements;
+    };
+  }
+
   handleSearchProduits() {
     const theKeyword: string = this.route.snapshot.paramMap.get('keyword')!;
+    // If we have a different keyword than previous
+    // then set thePageNumber to 1
+    if (this.previousKeyword != theKeyword) {
+      this.thePageNumber = 1;
+    }
+    this.previousKeyword = theKeyword;
+    console.log(`keyword=${theKeyword}, thePageNumber=${this.thePageNumber}`);
 
     // now search for the produits using keyword
-    this.produitService.searchProduits(theKeyword).subscribe(
-      ((data: Produit[]) => {
-        this.produits = data;
-      })
-    );
+    this.produitService.getSearchProduitPaginate(this.thePageNumber - 1, 
+                                                 this.thePageSize, 
+                                                 theKeyword).subscribe(this.processResult());
+      
   }
 
   handleListeProduits() {
@@ -65,6 +87,8 @@ export class ListProduitComponent implements OnInit {
       // Not category id available ... default to category id 1
       this.currentCategoryId = 1;
     }
+
+    
 
     // Check if we have a different category than previous
     // Note: Angular will reuse a component if it's currently being viewed
@@ -83,13 +107,7 @@ export class ListProduitComponent implements OnInit {
     this.produitService.getProduitListPaginate(this.thePageNumber - 1,
                                                 this.thePageSize,
                                                 this.currentCategoryId)
-                                                .subscribe(data => {
-                                                  this.produits = data._embedded.products;
-                                                  this.thePageNumber = data.page.number + 1;
-                                                  this.thePageSize = data.page.size;
-                                                  this.theTotalElements = data.page.totalElements;
-                                                }
-                                                );
+                                                .subscribe(this.processResult());
   }
 }
 
